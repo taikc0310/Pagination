@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <title>Pagination</title>
+    <style>
+        #products{
+            height:500px
+
+        }
+      
+    </style>
+  </head>
+  <body>
+    <div class="row" id="products" >
+        
+    </div>
+   
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center" id="pagination">
+          <li class="page-item"><a class="page-link" href="#" onclick="previous()">Previous</a></li>
+          <li class="page-item"><a class="page-link" href="#" onclick="loadPage(1)">1</a></li>
+          <li class="page-item"><a class="page-link" href="#" onclick="loadPage(2)">2</a></li>
+          <li class="page-item"><a class="page-link" href="#" onclick="loadPage(3)">3</a></li>
+          <li class="page-item"><a class="page-link" href="#" onclick="loadPage(4)">4</a></li>
+          <li class="page-item"><a class="page-link" href="#" onclick="loadPage(5)">5</a></li>
+          <li class="page-item"><a class="page-link" href="#" onclick="loadPage(6)">6</a></li>
+          <li class="page-item"><a class="page-link" href="#" onclick="loadPage(7)">7</a></li>
+          <li class="page-item"><a class="page-link" href="#" onclick="loadPage(8)">8</a></li>
+          <li class="page-item"><a class="page-link" href="#" onclick="loadPage(9)">9</a></li>
+          <li class="page-item"><a class="page-link" href="#" onclick="loadPage(10)">10</a></li>
+          <li class="page-item"><a class="page-link" href="#" onclick="loadPage(11)">11</a></li>
+          <li class="page-item"><a class="page-link" href="#" onclick="loadPage(12)">12</a></li>
+          <li class="page-item"><a class="page-link" href="#" onclick="next()">Next</a></li>
+        </ul>
+      </nav>
+   
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script>
+        //https://fakeapi.platzi.com/doc/products#create-a-product
+        let page = 1
+        let maxPage = 12
+        let offset = 0
+        let limit = 18
+
+        fetch(`https://api.escuelajs.co/api/v1/products?offset=${offset}&limit=${limit}`)
+            .then(response => response.json())
+            .then(json => {
+                    const products = json.map( (item) => 
+                        `
+                        <div class="col-2 mt-3 ">
+                            <div class="card bg-primary" style="width: 18rem;">
+                                <div class="card-body">
+                                    <h5 class="card-title">${item.title}</h5>
+                                    <p class="card-text">${item.price}</p>
+                                </div>
+                            </div>
+                        </div>
+                        `
+                    
+                    ).join('')
+
+                    $('#products').html(products)
+
+                    console.log(json);
+                }
+               
+                
+        )
+         const loadPage = (index) => {
+            page = index
+            offset = limit * ( page - 1 )
+            fetch(`https://api.escuelajs.co/api/v1/products?offset=${offset}&limit=${limit}`)
+            .then(response => response.json())
+            .then(json => {
+            
+                    const products = json.map( (item) => 
+                        `
+                        <div class="col-2 mt-3 ">
+                            <div class="card bg-primary" style="width: 18rem;">
+                                <div class="card-body">
+                                    <h5 class="card-title">${item.title}</h5>
+                                    <p class="card-text">${item.price}</p>
+                                </div>
+                            </div>
+                        </div>
+                        `
+                    
+                    ).join('')
+
+                    $('#products').html(products)
+                    console.log(json);
+                }
+               
+                
+            )
+          
+            
+         }
+         
+         const previous = () => {
+            page--
+            if(page < 1){
+                page = 1
+            }
+            loadPage(page)
+         }
+         const next = () => {
+            page++
+            if(page > maxPage){
+                page = maxPage
+            }
+            loadPage(page)
+
+           
+         }
+         
+         function getCookie(cname) {
+            let name = cname 1+ "=";
+            let decodedCookie = decodeURIComponent(document.cookie);
+            let ca = decodedCookie.split(';');
+            for(let i = 0; i <ca.length; i++) {
+                let c = ca[i];
+                while (c.charAt(0) == ' ') {
+                c = c.substring(1);
+                }
+                if (c.indexOf(name) == 0) {
+                return c.substring(name.length, c.length);
+                }
+            }
+            return "";
+        }
+         function checkCookie() {
+            let id = getCookie("token");
+            if( id == ""){
+                $(window).attr('location','http://127.0.0.1:5500/auth.html')
+            }
+        }
+        checkCookie()
+    </script>
+  </body>
+</html>
